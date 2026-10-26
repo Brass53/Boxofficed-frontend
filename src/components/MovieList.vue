@@ -1,19 +1,25 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 
 interface Movie {
+  id: number
   name: string
-  genre: string
+  genre: string | null
   rating: number
   watched: boolean
 }
 
-// Beispiel-Entitäten: ein Array von Film-Objekten.
-const movies: Movie[] = [
-  { name: 'Inception',    genre: 'Sci-Fi',    rating: 5, watched: true },
-  { name: 'The Matrix',   genre: 'Action',    rating: 4, watched: false },
-  { name: 'Up',           genre: 'Animation', rating: 5, watched: true },
-  { name: 'Interstellar', genre: 'Sci-Fi',    rating: 5, watched: false },
-]
+const movies = ref<Movie[]>([])
+
+onMounted(async () => {
+  const baseUrl = import.meta.env.VITE_APP_BACKEND_BASE_URL
+  try {
+    const response = await fetch(`${baseUrl}/`)
+    movies.value = await response.json()
+  } catch (error) {
+    console.error('Fehler beim Laden der Watchlist:', error)
+  }
+})
 </script>
 
 <template>
